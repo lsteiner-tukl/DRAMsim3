@@ -36,8 +36,12 @@ std::istream& operator>>(std::istream& is, Transaction& trans) {
     std::unordered_set<std::string> write_types = {"WRITE", "write", "P_MEM_WR",
                                                    "BOFF"};
     std::string mem_op;
-    is >> std::hex >> trans.addr >> mem_op >> std::dec >> trans.added_cycle;
+    std::string cycle;
+    //is >> std::hex >> trans.addr >> mem_op >> std::dec >> trans.added_cycle;
+    is >> cycle >> mem_op >> std::hex >> trans.addr;
+    trans.added_cycle = std::stoull(cycle.c_str());
     trans.is_write = write_types.count(mem_op) == 1;
+    //std::cout << "Address: " << trans.addr << ", Operation: " << mem_op << ", Cycle: " << trans.added_cycle << ", iswrite: " << trans.is_write << std::endl;
     return is;
 }
 

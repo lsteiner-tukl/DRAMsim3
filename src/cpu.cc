@@ -2,7 +2,7 @@
 
 namespace dramsim3 {
 
-void RandomCPU::ClockTick() {
+bool RandomCPU::ClockTick() {
     // Create random CPU requests at full speed
     // this is useful to exploit the parallelism of a DRAM protocol
     // and is also immune to address mapping and scheduling policies
@@ -16,10 +16,10 @@ void RandomCPU::ClockTick() {
         memory_system_.AddTransaction(last_addr_, last_write_);
     }
     clk_++;
-    return;
+    return true;
 }
 
-void StreamCPU::ClockTick() {
+bool StreamCPU::ClockTick() {
     // stream-add, read 2 arrays, add them up to the third array
     // this is a very simple approximate but should be able to produce
     // enough buffer hits
@@ -56,7 +56,7 @@ void StreamCPU::ClockTick() {
         inserted_c_ = false;
     }
     clk_++;
-    return;
+    return true;
 }
 
 TraceBasedCPU::TraceBasedCPU(const std::string& config_file,
@@ -70,7 +70,7 @@ TraceBasedCPU::TraceBasedCPU(const std::string& config_file,
     }
 }
 
-void TraceBasedCPU::ClockTick() {
+bool TraceBasedCPU::ClockTick() {
     memory_system_.ClockTick();
     if (!trace_file_.eof()) {
         if (get_next_) {
@@ -81,12 +81,15 @@ void TraceBasedCPU::ClockTick() {
             get_next_ = memory_system_.WillAcceptTransaction(trans_.addr,
                                                              trans_.is_write);
             if (get_next_) {
+                totalNumberOfTransactions++;
                 memory_system_.AddTransaction(trans_.addr, trans_.is_write);
             }
         }
     }
+    else
+        return false;
     clk_++;
-    return;
+    return true;
 }
 
 }  // namespace dramsim3

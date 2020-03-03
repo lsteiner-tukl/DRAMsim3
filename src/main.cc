@@ -1,6 +1,7 @@
 #include <iostream>
 #include "./../ext/headers/args.hxx"
 #include "cpu.h"
+#include <chrono>
 
 using namespace dramsim3;
 
@@ -61,9 +62,18 @@ int main(int argc, const char **argv) {
         }
     }
 
-    for (uint64_t clk = 0; clk < cycles; clk++) {
-        cpu->ClockTick();
-    }
+//    for (uint64_t clk = 0; clk < cycles; clk++) {
+//        cpu->ClockTick();
+//    }
+    auto start = std::chrono::high_resolution_clock::now();
+
+    do {} while (cpu->ClockTick());
+
+    auto finish = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double> elapsed = finish - start;
+    std::cout << "Simulation took " + std::to_string(elapsed.count()) + " seconds." << std::endl;
+
     cpu->PrintStats();
 
     delete cpu;
