@@ -1,0 +1,1 @@
+./build/dramsim3main configs/DDR3_8Gb_x8_1600.ini -c 1 -t benchmarks/stresstest.stl

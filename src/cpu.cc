@@ -87,7 +87,10 @@ bool TraceBasedCPU::ClockTick() {
         }
     }
     else
+    {
+        std::cout << "Simulated cycles: " << clk_ << std::endl;
         return false;
+    }
     clk_++;
     return true;
 }
